@@ -12,8 +12,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Validate JSON
-        uses: walbo/validate-json@v1.1.0
-        with:
-          files: hpackage.schema.json
-          schema-version: draft-07
-          fail-on-missing-schema: true
+        uses: docker://orrosenblatt/validate-json-action:latest
+        env:
+          INPUT_JSONS: hpackage.schema.json
