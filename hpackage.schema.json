@@ -1,37 +1,44 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "http://badmagic100.github.io/HollowKnight.Packages/hpackage.schema.json",
+    "$id": "http://hpackage.github.io/hpackage-schema/hpackage.schema.json",
     "title": "Hollow Knight PackageDef",
     "description": "Package definition schema for Hollow Knight mods and modpacks",
     "type": "object",
-    "required": ["name", "description", "repository"],
+    "required": ["name", "description", "repository", "assets"],
     "additionalProperties": false,
     "properties": {
         "name": {
+            "$comment": "The name of the mod or modpack.",
             "type": "string"
         },
         "description": {
+            "$comment": "A brief description of the mod or modpack.",
             "type": "string"
         },
         "authors": {
+            "$comment": "The authors of the mod or modpack. What constitutes authorship is up for interpretation.",
             "type": "array",
             "items": {
                 "type": "string"
             }
         },
         "repository": {
+            "$comment": "The repository URL.",
             "$ref": "#/definitions/Link"
         },
         "assets": {
+            "$comment": "A list of assets used for releases. These can be across all platforms, or a specific target platform.",
             "type": "array",
             "items": {
                 "$ref": "#/definitions/Asset"
             }
         },
         "dependencies": {
+            "$comment": "Direct, required dependency mods.",
             "$ref": "#/definitions/References"
         },
         "devDependencies": {
+            "$comment": "Optional runtime dependencies; required to install for compilation but not needed at runtime.",
             "$ref": "#/definitions/References"
         }
     },
