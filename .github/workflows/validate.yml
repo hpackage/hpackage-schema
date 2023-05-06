@@ -12,6 +12,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Validate JSON
-        uses: cardinalby/schema-validator/actions@v3
+        uses: cardinalby/schema-validation-action@v3
         with:
           file: hpackage.schema.json
