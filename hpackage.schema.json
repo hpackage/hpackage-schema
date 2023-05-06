@@ -4,7 +4,7 @@
     "title": "Hollow Knight PackageDef",
     "description": "Package definition schema for Hollow Knight mods and modpacks",
     "type": "object",
-    "required": ["name", "description", "repository", "assets"],
+    "required": ["name", "description", "repository"],
     "additionalProperties": false,
     "properties": {
         "name": {
