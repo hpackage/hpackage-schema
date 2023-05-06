@@ -1,0 +1,151 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://badmagic100.github.io/HollowKnight.Packages/hpackage.schema.json",
+    "title": "Hollow Knight PackageDef",
+    "description": "Package definition schema for Hollow Knight mods and modpacks",
+    "type": "object",
+    "required": ["name", "description", "repository", "assets"],
+    "additionalProperties": false,
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "authors": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "repository": {
+            "$ref": "#/definitions/Link"
+        },
+        "assets": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/Asset"
+            }
+        },
+        "dependencies": {
+            "$ref": "#/definitions/References"
+        },
+        "devDependencies": {
+            "$ref": "#/definitions/References"
+        }
+    },
+    "definitions": {
+        "Link": {
+            "type": "string",
+            "format": "uri"
+        },
+        "Asset": {
+            "oneOf": [
+                {
+                    "title": "UniversalAsset",
+                    "type": "string"
+                },
+                {
+                    "$ref": "#/definitions/PlatformAsset"
+                }
+            ]
+        },
+        "PlatformAsset": {
+            "type": "object",
+            "required": ["platform", "path"],
+            "additionalProperties": false,
+            "properties": {
+                "platform": {
+                    "$ref": "#/definitions/Platform"
+                },
+                "path": {
+                    "type": "string"
+                }
+            }
+        },
+        "Platform": {
+            "type": "string",
+            "enum": ["win32", "macos", "linux"]
+        },
+        "References": {
+            "$comment": "Mapping of mod name to the desired version",
+            "type": "object", 
+            "additionalProperties": 
+            { 
+                "title": "ReferenceVersion",
+                "oneOf": [
+                    { "$ref": "#/definitions/StringVersion" },
+                    { "$ref": "#/definitions/ReferenceDef" }
+                ]
+            }
+        },
+        "ReferenceDef": {
+            "type": "object",
+            "required": ["ref"],
+            "additionalProperties": false,
+            "properties": {
+                "ref": {
+                    "oneOf": [
+                        { "$ref": "#/definitions/GitReference" },
+                        { "$ref": "#/definitions/ModlinksReference" },
+                        { "$ref": "#/definitions/LinkReference" }
+                    ]
+                },
+                "alternateInstallName": {
+                    "type": "string"
+                },
+                "fileType": {
+                    "type": "string",
+                    "default": "infer",
+                    "enum": ["zip", "dll", "infer"]
+                }
+            }
+        },
+        "StringVersion": {
+            "$comment": "A mod version identifier. Versions are processed, in precedence order, as follows:\n* Direct download URL\n* @latest or @modlinks, specifying the latest version in the git repo or the latest version on modlinks respectively\n* A modlinks version number, if that version is present on modlinks.\n* A github release tag",
+            "type": "string"
+        },
+        "GitReference": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "tag": {
+                    "type": "string"
+                },
+                "useLatestRelease": {
+                    "type": "boolean",
+                    "const": true,
+                    "$comment": "If this flag is set, tag is ignored."
+                },
+                "asset": {
+                    "type": "string"
+                }
+            }
+        },
+        "ModlinksReference": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "version": {
+                    "type": "string"
+                },
+                "useLatestPublished": {
+                    "type": "boolean",
+                    "const": true,
+                    "$comment": "If this flag is set, version is ignored."
+                }
+            }
+        },
+        "LinkReference": {
+            "type": "object",
+            "required": ["link"],
+            "additionalProperties": false,
+            "properties": {
+                "link": {
+                    "$ref": "#/definitions/Link"
+                }
+            }
+        }
+    }
+}
