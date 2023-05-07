@@ -4,7 +4,6 @@
     "title": "Hollow Knight PackageDef",
     "description": "Package definition schema for Hollow Knight mods and modpacks",
     "type": "object",
-    "required": ["name", "description", "repository", "assets"],
     "additionalProperties": false,
     "properties": {
         "name": {
@@ -26,11 +25,15 @@
             "$comment": "The repository URL.",
             "$ref": "#/definitions/Link"
         },
-        "assets": {
-            "$comment": "A list of assets used for releases. These can be across all platforms, or a specific target platform.",
+        "releaseAssets": {
+            "$comment": "The mod assets used for release, referring to files on disk releative to the project directory. Can either be a single cross-platform asset or single-platform assets for one or more platforms.",
+            "$ref": "#/definitions/ReleaseAssets"
+        },
+        "additionalAssets": {
+            "$comment": "A list of additional non-mod assets e.g. skins, etc to install with the pack.",
             "type": "array",
             "items": {
-                "$ref": "#/definitions/Asset"
+                "$ref": "#/definitions/AdditionalAsset"
             }
         },
         "dependencies": {
@@ -44,39 +47,54 @@
     },
     "definitions": {
         "Link": {
+            "$comment": "A download URL.",
             "type": "string",
             "format": "uri"
         },
-        "Asset": {
+        "ReleaseAssets": {
+            "$comment": "A cross-platform asset name/path, or a collection of such assets for various target platforms.",
             "oneOf": [
-                {
-                    "title": "UniversalAsset",
-                    "type": "string"
-                },
-                {
-                    "$ref": "#/definitions/PlatformAsset"
-                }
+                { "title": "Universal Asset", "type": "string" },
+                { "$ref": "#/definitions/PlatformAssets" }
             ]
         },
-        "PlatformAsset": {
+        "PlatformAssets": {
+            "$comment": "A collection of single-platform asset names/paths for various target platforms.",
             "type": "object",
-            "required": ["platform", "path"],
             "additionalProperties": false,
             "properties": {
-                "platform": {
-                    "$ref": "#/definitions/Platform"
+                "win32": { "type": "string" },
+                "linux": { "type": "string" },
+                "macos": { "type": "string" }
+            }
+        },
+        "AdditionalAsset": {
+            "$comment": "A non-mod asset to be installed.",
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["downloadUrl", "installRootDir", "installPath"],
+            "properties": {
+                "downloadUrl": {
+                    "$comment": "The download URL for the file to download",
+                    "$ref": "#/definitions/Link"
                 },
-                "path": {
+                "installRootDir": { 
+                    "$comment": "The root directory to install the asset to.",
+                    "$ref": "#/definitions/InstallationRoot" 
+                },
+                "installPath": {
+                    "$comment": "The install path relative to the provided root directory.",
                     "type": "string"
                 }
             }
         },
-        "Platform": {
+        "InstallationRoot": {
+            "$comment": "Folders valid for use as asset installation directories.",
             "type": "string",
-            "enum": ["win32", "macos", "linux"]
+            "enum": [ "mods", "saves" ]
         },
         "References": {
-            "$comment": "Mapping of mod name to the desired version",
+            "$comment": "Mapping of mod name to the desired version.",
             "type": "object", 
             "additionalProperties": 
             { 
@@ -88,11 +106,13 @@
             }
         },
         "ReferenceDef": {
+            "$comment": "A structured reference to a downloadable mod from any of various sources.",
             "type": "object",
             "required": ["ref"],
             "additionalProperties": false,
             "properties": {
                 "ref": {
+                    "$comment": "A reference to a mod download from GitHub, ModLinks, or direct download link.",
                     "oneOf": [
                         { "$ref": "#/definitions/GitReference" },
                         { "$ref": "#/definitions/ModlinksReference" },
@@ -100,9 +120,11 @@
                     ]
                 },
                 "alternateInstallName": {
+                    "$comment": "An alternate folder name to use to install, if your local folder name is different from the modlinks mod name.",
                     "type": "string"
                 },
                 "fileType": {
+                    "$comment": "Whether to treat the file as a zip or dll on installation. 'infer' makes a best effort to automatically determine the type from the file extension.",
                     "type": "string",
                     "default": "infer",
                     "enum": ["zip", "dll", "infer"]
@@ -114,42 +136,49 @@
             "type": "string"
         },
         "GitReference": {
+            "$comment": "A reference to a GitHub release, retrieved via a mod's repository field in modlinks.",
             "type": "object",
             "additionalProperties": false,
             "properties": {
                 "tag": {
+                    "$comment": "The tag of the GitHub release to use.",
                     "type": "string"
                 },
                 "useLatestRelease": {
                     "type": "boolean",
                     "const": true,
-                    "$comment": "If this flag is set, tag is ignored."
+                    "$comment": "If set, this flag uses the latest published release on the mod's repository. The tag field is ignored."
                 },
                 "asset": {
-                    "type": "string"
+                    "$comment": "Disambiguator for which asset(s) to use from the linked release, possibly platform-dependent. If there is only one asset on the release, this field is optional and usage of that asset is inferred.",
+                    "$ref": "#/definitions/ReleaseAssets"
                 }
             }
         },
         "ModlinksReference": {
+            "$comment": "A reference to a ModLinks release.",
             "type": "object",
             "additionalProperties": false,
             "properties": {
                 "version": {
+                    "$comment": "The modlinks version number to use, in the form 'X.Y.Z.W'.",
                     "type": "string"
                 },
                 "useLatestPublished": {
+                    "$comment": "If set, this flag uses the latest version of the mod on modlinks. The version field is ignored.",
                     "type": "boolean",
-                    "const": true,
-                    "$comment": "If this flag is set, version is ignored."
+                    "const": true
                 }
             }
         },
         "LinkReference": {
+            "$comment": "A reference to a direct download release.",
             "type": "object",
             "required": ["link"],
             "additionalProperties": false,
             "properties": {
                 "link": {
+                    "$comment": "A direct link to the file to download.",
                     "$ref": "#/definitions/Link"
                 }
             }
