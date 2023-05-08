@@ -94,6 +94,18 @@
             "enum": [ "mods", "saves" ]
         },
         "References": {
+            "$comment": "Defines references to other mods.",
+            "oneOf": [
+                { "$ref": "#/definitions/ArrayReferences" },
+                { "$ref": "#/definitions/MappedReferences" }
+            ]
+        },
+        "ArrayReferences": {
+            "$comment": "An array of mod names. Version is inferred to be @modlinks.",
+            "type": "array",
+            "items": { "type": "string" }
+        },
+        "MappedReferences": {
             "$comment": "Mapping of mod name to the desired version.",
             "type": "object", 
             "additionalProperties": 
