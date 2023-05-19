@@ -21,7 +21,9 @@ jobs:
     strategy:
       matrix:
         target:
+          - hpackage/client-template
           - hpackage/hpackage-rs
+          - hpackage/HPackage.Net
     steps:
       - uses: peter-evans/repository-dispatch@v2
         with:
