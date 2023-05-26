@@ -155,7 +155,7 @@
                 "asset": {
                     "$comment": "Disambiguator for which asset(s) to use from the linked release, possibly platform-dependent. If there is only one asset on the release, this field is optional and usage of that asset is inferred.",
                     "$ref": "#/definitions/ReleaseAssets"
-                }.
+                },
                 "tag": {
                     "$comment": "The tag of the GitHub release to use.",
                     "type": "string"
