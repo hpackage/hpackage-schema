@@ -25,6 +25,14 @@
             "$comment": "The repository URL.",
             "$ref": "#/definitions/Link"
         },
+        "dependencies": {
+            "$comment": "Direct, required dependency mods.",
+            "$ref": "#/definitions/References"
+        },
+        "devDependencies": {
+            "$comment": "Optional runtime dependencies; required to install for compilation but not needed at runtime.",
+            "$ref": "#/definitions/References"
+        },
         "releaseAssets": {
             "$comment": "The mod assets used for release, referring to files on disk releative to the project directory. Can either be a single cross-platform asset or single-platform assets for one or more platforms.",
             "$ref": "#/definitions/ReleaseAssets"
@@ -35,14 +43,6 @@
             "items": {
                 "$ref": "#/definitions/AdditionalAsset"
             }
-        },
-        "dependencies": {
-            "$comment": "Direct, required dependency mods.",
-            "$ref": "#/definitions/References"
-        },
-        "devDependencies": {
-            "$comment": "Optional runtime dependencies; required to install for compilation but not needed at runtime.",
-            "$ref": "#/definitions/References"
         }
     },
     "definitions": {
@@ -78,13 +78,13 @@
                     "$comment": "The download URL for the file to download",
                     "$ref": "#/definitions/Link"
                 },
-                "installRootDir": { 
-                    "$comment": "The root directory to install the asset to.",
-                    "$ref": "#/definitions/InstallationRoot" 
-                },
                 "installPath": {
                     "$comment": "The install path relative to the provided root directory.",
                     "type": "string"
+                },
+                "installRootDir": { 
+                    "$comment": "The root directory to install the asset to.",
+                    "$ref": "#/definitions/InstallationRoot" 
                 }
             }
         },
@@ -123,14 +123,6 @@
             "required": ["ref"],
             "additionalProperties": false,
             "properties": {
-                "ref": {
-                    "$comment": "A reference to a mod download from GitHub, ModLinks, or direct download link.",
-                    "oneOf": [
-                        { "$ref": "#/definitions/GitReference" },
-                        { "$ref": "#/definitions/ModlinksReference" },
-                        { "$ref": "#/definitions/LinkReference" }
-                    ]
-                },
                 "alternateInstallName": {
                     "$comment": "An alternate folder name to use to install, if your local folder name is different from the modlinks mod name.",
                     "type": "string"
@@ -140,11 +132,19 @@
                     "type": "string",
                     "default": "infer",
                     "enum": ["zip", "dll", "infer"]
+                },
+                "ref": {
+                    "$comment": "A reference to a mod download from GitHub, ModLinks, or direct download link.",
+                    "oneOf": [
+                        { "$ref": "#/definitions/GitReference" },
+                        { "$ref": "#/definitions/ModlinksReference" },
+                        { "$ref": "#/definitions/LinkReference" }
+                    ]
                 }
             }
         },
         "StringVersion": {
-            "$comment": "A mod version identifier. Versions are processed, in precedence order, as follows:\n* Direct download URL\n* @latest or @modlinks, specifying the latest version in the git repo or the latest version on modlinks respectively\n* A modlinks version number, if that version is present on modlinks.\n* A github release tag",
+            "$comment": "A mod version identifier. Versions are processed, in precedence order, as follows:\n* Direct download URL\n* @latest or @modlinks, specifying the latest version in the git repo or the latest version on modlinks respectively\n* A modlinks version number matching the format X.Y.Z.W\n* A github release tag",
             "type": "string"
         },
         "GitReference": {
@@ -152,6 +152,10 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
+                "asset": {
+                    "$comment": "Disambiguator for which asset(s) to use from the linked release, possibly platform-dependent. If there is only one asset on the release, this field is optional and usage of that asset is inferred.",
+                    "$ref": "#/definitions/ReleaseAssets"
+                }.
                 "tag": {
                     "$comment": "The tag of the GitHub release to use.",
                     "type": "string"
@@ -160,10 +164,6 @@
                     "type": "boolean",
                     "const": true,
                     "$comment": "If set, this flag uses the latest published release on the mod's repository. The tag field is ignored."
-                },
-                "asset": {
-                    "$comment": "Disambiguator for which asset(s) to use from the linked release, possibly platform-dependent. If there is only one asset on the release, this field is optional and usage of that asset is inferred.",
-                    "$ref": "#/definitions/ReleaseAssets"
                 }
             }
         },
@@ -172,14 +172,14 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-                "version": {
-                    "$comment": "The modlinks version number to use, in the form 'X.Y.Z.W'.",
-                    "type": "string"
-                },
                 "useLatestPublished": {
                     "$comment": "If set, this flag uses the latest version of the mod on modlinks. The version field is ignored.",
                     "type": "boolean",
                     "const": true
+                },
+                "version": {
+                    "$comment": "The modlinks version number to use, in the form 'X.Y.Z.W'.",
+                    "type": "string"
                 }
             }
         },
