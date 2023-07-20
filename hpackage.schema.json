@@ -10,6 +10,18 @@
             "$comment": "The name of the mod or modpack.",
             "type": "string"
         },
+        "version": {
+            "$comment": "The version of the mod or modpack.",
+            "type": "string"
+        },
+        "tags": {
+            "$comment": "Tags of the mod or modpack.",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [ "Boss", "Cosmetic", "Expansion", "Gameplay", "Library", "Utility" ]
+            }
+        },
         "description": {
             "$comment": "A brief description of the mod or modpack.",
             "type": "string"
