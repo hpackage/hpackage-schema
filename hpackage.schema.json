@@ -14,6 +14,10 @@
             "$comment": "The version of the mod or modpack.",
             "type": "string"
         },
+        "icon": {
+            "$comment": "The icon url or data url of the mod or modpack.",
+            "type": "string"
+        },
         "tags": {
             "$comment": "Tags of the mod or modpack.",
             "type": "array",
