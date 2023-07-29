@@ -14,7 +14,7 @@ jobs:
       - name: Validate JSON
         uses: cardinalby/schema-validator-action@v3
         with:
-          file: hpackage.schema.json
+          file: 'hpackage.schema.json|hpackage.source.schema.json'
   dispatch:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
