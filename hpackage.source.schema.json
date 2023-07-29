@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Hollow Knight Package SourceDef",
+  "description": "Definition schema for Hollow Knight Package Source",
+  "type": "object",
+  "required": [ "name", "description", "packages" ],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "$comment": "The name of the source.",
+      "type": "string"
+    },
+    "icon": {
+      "$comment": "The icon of the source (URL/ Data URL).",
+      "type": "string"
+    },
+    "description": {
+      "$comment": "A brief description of the source.",
+      "type": "string"
+    },
+    "authors": {
+      "$comment": "The authors of the source. What constitutes authorship is up for interpretation.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "repository": {
+      "$comment": "The repository URL.",
+      "type": "string",
+      "format": "uri"
+    },
+    "packages": {
+      "$comment": "Hollow Knight Packages (URL / Data URL / Def)",
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "https://raw.githubusercontent.com/hpackage/hpackage-schema/main/hpackage.schema.json"
+          },
+          {
+            "$comment": "URL",
+            "type": "string",
+            "format": "uri"
+          }
+        ]
+      }
+    }
+  }
+}
